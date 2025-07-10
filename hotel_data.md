@@ -1,0 +1,143 @@
+\[
+
+{
+
+"name": "Deluxe King Room",
+
+"maxcount": 2,
+
+"phonenumber": "9876543210",
+
+"rentperday": 1500,
+
+"type": "Deluxe",
+
+"description": "Spacious deluxe king room with balcony and modern decor.",
+
+"imageurls": \[
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113126/medium/108d6e559f2468c3.jpg",
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113126/medium/acb8e8a45f482bc1.jpg",
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113126/medium/acb8e8a45f482bc1.jpg"
+
+\],
+
+"currentbookings": \[\]
+
+},
+
+{
+
+"name": "Standard Queen Room",
+
+"maxcount": 3,
+
+"phonenumber": "9123456780",
+
+"rentperday": 1100,
+
+"type": "Standard",
+
+"description": "Affordable and cozy queen room with essentials and warm lighting.",
+
+"imageurls": \[
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113127/medium/21a2f8b3c0d4f562.jpg",
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113127/medium/4e5d6f7b8c9a0d1e.jpg",
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113126/medium/acb8e8a45f482bc1.jpg"
+
+\],
+
+"currentbookings": \[\]
+
+},
+
+{
+
+"name": "Luxury Suite Room",
+
+"maxcount": 4,
+
+"phonenumber": "9001234567",
+
+"rentperday": 2500,
+
+"type": "Suite",
+
+"description": "Luxurious suite room with lounge area and premium facilities.",
+
+"imageurls": \[
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113128/medium/98b1c2d3e4f5a6b7.jpg",
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113128/medium/76d5e4c3b2a1f0e9.jpg",
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113126/medium/acb8e8a45f482bc1.jpg"
+
+\],
+
+"currentbookings": \[\]
+
+},
+
+{
+
+"name": "Economy Single Room",
+
+"maxcount": 1,
+
+"phonenumber": "9871234560",
+
+"rentperday": 700,
+
+"type": "Single",
+
+"description": "Budget-friendly single room for solo travelers.",
+
+"imageurls": \[
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113129/medium/abc123def456ghi7.jpg",
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113126/medium/acb8e8a45f482bc1.jpg",
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113126/medium/acb8e8a45f482bc1.jpg"
+
+\],
+
+"currentbookings": \[\]
+
+},
+
+{
+
+"name": "Family Room",
+
+"maxcount": 5,
+
+"phonenumber": "9956781234",
+
+"rentperday": 1800,
+
+"type": "Family",
+
+"description": "Spacious family room with multiple beds and child-safe furniture.",
+
+"imageurls": \[
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113130/medium/1a2b3c4d5e6f7g8h.jpg",
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113130/medium/2b3c4d5e6f7g8h9i.jpg",
+
+"https://images.oyoroomscdn.com/uploads/hotel\_image/113126/medium/acb8e8a45f482bc1.jpg"
+
+\],
+
+"currentbookings": \[\]
+
+}
+
+\]
