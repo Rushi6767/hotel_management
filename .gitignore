@@ -79,3 +79,4 @@ data/db/
 *.ns       # MongoDB files
 *.0
 *.1
+*.md
