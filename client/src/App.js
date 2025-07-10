@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Homescreen from './screens/Homescreen';
 import Bookingscreen from './screens/Bookingscreen';
+import Register from './screens/Register';
+import Login from './screens/Login';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 
@@ -14,6 +16,8 @@ function App() {
         <Route path="/" element={<Homescreen />} />
         <Route path="/home" element={<Homescreen />} />
         <Route path="/booking/:roomid" element={<Bookingscreen />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
         {/* Add more routes here as needed */}
       </Routes>
     </Router>
