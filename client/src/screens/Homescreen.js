@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Modal, Carousel, Badge } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 function Homescreen() {
+  const navigate = useNavigate();
   const [rooms, setRooms] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -33,6 +35,13 @@ function Homescreen() {
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedRoom(null);
+  };
+
+  const handleProceedToBooking = () => {
+    if (selectedRoom) {
+      setShowModal(false);
+      navigate(`/booking/${selectedRoom._id}`);
+    }
   };
 
   const getTypeColor = (type) => {
@@ -129,11 +138,18 @@ function Homescreen() {
                     
                     <div className="d-grid gap-2">
                       <Button 
+                        variant="success" 
+                        onClick={() => navigate(`/booking/${room._id}`)}
+                        className="fw-semibold"
+                      >
+                        🗓️ Book Now
+                      </Button>
+                      <Button 
                         variant="outline-primary" 
                         onClick={() => handleShowModal(room)}
                         className="fw-semibold"
                       >
-                        📋 Demo Modal
+                        📋 View Details
                       </Button>
                     </div>
                   </div>
@@ -214,7 +230,7 @@ function Homescreen() {
                       <Button variant="light" className="w-100 mb-2">
                         📞 Call: {selectedRoom.phonenumber}
                       </Button>
-                      <Button variant="outline-light" className="w-100">
+                      <Button variant="outline-light" className="w-100" onClick={handleProceedToBooking}>
                         🗓️ Book Now
                       </Button>
                     </div>
@@ -228,7 +244,7 @@ function Homescreen() {
             <Button variant="secondary" onClick={handleCloseModal}>
               Close
             </Button>
-            <Button variant="primary">
+            <Button variant="primary" onClick={handleProceedToBooking}>
               Proceed to Booking
             </Button>
           </Modal.Footer>
