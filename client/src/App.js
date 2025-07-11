@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Homescreen from './screens/Homescreen';
 import Bookingscreen from './screens/Bookingscreen';
+import BookingSuccess from './screens/BookingSuccess';
 import Register from './screens/Register';
 import Login from './screens/Login';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -23,6 +24,7 @@ function App() {
               <Bookingscreen />
             </ProtectedRoute>
           } />
+          <Route path="/booking-success" element={<BookingSuccess />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           {/* Add more routes here as needed */}

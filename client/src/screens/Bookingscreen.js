@@ -1,8 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Carousel, ListGroup, Alert } from 'react-bootstrap';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { loadStripe } from '@stripe/stripe-js';
 import axios from 'axios';
 import moment from 'moment';
+
+// Simple Stripe setup - replace with your actual public key
+const stripePromise = loadStripe(process.env.REACT_APP_STRIPE_PUBLIC_KEY || 'pk_test_your_actual_public_key_here');
+
+
+const getTypeColor = (type) => {
+  const typeColors = {
+    'Deluxe': 'primary',
+    'Standard': 'secondary',
+    'Suite': 'danger',
+    'Single': 'info',
+    'Family': 'warning',
+    'Executive': 'dark'
+  };
+  return typeColors[type] || 'primary'; // default to primary if type not found
+};
 
 function Bookingscreen() {
   const { roomid } = useParams();
@@ -50,27 +67,54 @@ function Bookingscreen() {
     }
   }, [roomid, location.search]);
 
-  const handlePaymentClick = () => {
-    if (!checkInDate || !checkOutDate) {
-      alert('Please select your check-in and check-out dates first!');
+  
+async function handlePaymentClick() {
+  try {
+    setLoading(true);
+    setError(null);
+    
+    console.log('Starting payment...');
+    
+    const stripe = await stripePromise;
+    if (!stripe) {
+      setError('Payment service not available');
+      setLoading(false);
       return;
     }
-    // TODO: Show payment form in future
-    alert('Payment form will be implemented here!');
-    // setShowPaymentForm(true);
-  };
 
-  const getTypeColor = (type) => {
-    const colors = {
-      'Deluxe': 'primary',
-      'Standard': 'success',
-      'Suite': 'warning',
-      'Single': 'info',
-      'Family': 'danger',
-      'Executive': 'dark'
+    const paymentData = {
+      room,
+      userid: JSON.parse(localStorage.getItem('user'))._id,
+      fromdate: checkInDate.format('YYYY-MM-DD'),
+      todate: checkOutDate.format('YYYY-MM-DD'),
+      totalamount: calculateTotalPrice(),
+      totaldays: totalDays
     };
-    return colors[type] || 'secondary';
-  };
+
+    console.log('Payment data:', paymentData);
+
+    const { data } = await axios.post('/api/checkout/create-checkout-session', paymentData);
+    console.log('Session created:', data);
+
+    if (!data.id) {
+      setError('Failed to create payment session');
+      setLoading(false);
+      return;
+    }
+
+    const result = await stripe.redirectToCheckout({ sessionId: data.id });
+    
+    if (result.error) {
+      setError('Payment failed: ' + result.error.message);
+      setLoading(false);
+    }
+  } catch (error) {
+    console.error('Payment error:', error);
+    setError('Payment failed: ' + (error.response?.data?.error || error.message));
+    setLoading(false);
+  }
+}
+  
 
   const getAmenities = (type) => {
     const amenities = {
@@ -327,10 +371,22 @@ function Bookingscreen() {
                         variant="success"
                         size="lg"
                         onClick={handlePaymentClick}
+                        disabled={loading}
                         className="fw-bold py-3"
                       >
-                        <i className="fas fa-credit-card me-2"></i>
-                        💳 Book Now & Pay
+                        {loading ? (
+                          <>
+                            <div className="spinner-border spinner-border-sm me-2" role="status">
+                              <span className="visually-hidden">Loading...</span>
+                            </div>
+                            Processing Payment...
+                          </>
+                        ) : (
+                          <>
+                            <i className="fas fa-credit-card me-2"></i>
+                            💳 Book Now & Pay
+                          </>
+                        )}
                       </Button>
                     </div>
                   </>

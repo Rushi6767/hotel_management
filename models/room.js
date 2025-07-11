@@ -29,9 +29,10 @@ const roomSchema = new mongoose.Schema({
         type: [String], // array of image URLs
         default: [],
     },
-  currentbookings: {
-    type: [Object], // array of booking objects (can be improved later)
-    default: [],
+  currentbookings: [],
+  type: {
+    type: String,
+    required: true
   }
 }, {
   timestamps: true // adds createdAt and updatedAt fields
