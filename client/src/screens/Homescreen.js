@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Modal, Carousel, Badge } from 'react-bootstrap';
+import { DatePicker } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import moment from 'moment';
+
+const { RangePicker } = DatePicker;
 
 function Homescreen() {
   const navigate = useNavigate();
@@ -10,6 +14,7 @@ function Homescreen() {
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const [selectedDates, setSelectedDates] = useState(null);
 
   useEffect(() => {
     const fetchRooms = async () => {
@@ -40,8 +45,24 @@ function Homescreen() {
   const handleProceedToBooking = () => {
     if (selectedRoom) {
       setShowModal(false);
-      navigate(`/booking/${selectedRoom._id}`);
+      const dateParams = selectedDates ? 
+        `?from=${selectedDates[0].format('YYYY-MM-DD')}&to=${selectedDates[1].format('YYYY-MM-DD')}` : '';
+      navigate(`/booking/${selectedRoom._id}${dateParams}`);
     }
+  };
+
+  const handleBookNow = (room) => {
+    if (selectedDates) {
+      const dateParams = `?from=${selectedDates[0].format('YYYY-MM-DD')}&to=${selectedDates[1].format('YYYY-MM-DD')}`;
+      navigate(`/booking/${room._id}${dateParams}`);
+    } else {
+      // Show alert to select dates
+      alert('Please select your check-in and check-out dates first!');
+    }
+  };
+
+  const handleDateChange = (dates) => {
+    setSelectedDates(dates);
   };
 
   const getTypeColor = (type) => {
@@ -93,6 +114,51 @@ function Homescreen() {
           <p className="lead text-muted">Discover our premium accommodations designed for your comfort</p>
         </div>
 
+        {/* Date Selection Section */}
+        <div className="bg-white rounded shadow-sm p-4 mb-5">
+          <div className="row align-items-center">
+            <div className="col-md-8">
+              <h5 className="text-primary mb-3">
+                <i className="fas fa-calendar-alt me-2"></i>
+                Select Your Stay Dates
+              </h5>
+              <p className="text-muted mb-0">
+                Choose your check-in and check-out dates to see accurate pricing and availability
+              </p>
+            </div>
+            <div className="col-md-4">
+              <RangePicker
+                size="large"
+                style={{ width: '100%' }}
+                placeholder={['Check-in Date', 'Check-out Date']}
+                onChange={handleDateChange}
+                format="YYYY-MM-DD"
+                disabledDate={(current) => {
+                  // Disable past dates
+                  return current && current < moment().startOf('day');
+                }}
+              />
+            </div>
+          </div>
+          {selectedDates && (
+            <div className="mt-3 p-3 bg-success bg-opacity-10 rounded">
+              <div className="row text-center">
+                <div className="col-md-6">
+                  <strong className="text-success">Check-in:</strong> {selectedDates[0].format('dddd, MMMM Do YYYY')}
+                </div>
+                <div className="col-md-6">
+                  <strong className="text-success">Check-out:</strong> {selectedDates[1].format('dddd, MMMM Do YYYY')}
+                </div>
+              </div>
+              <div className="text-center mt-2">
+                <Badge bg="success" className="fs-6">
+                  {selectedDates[1].diff(selectedDates[0], 'days')} nights selected
+                </Badge>
+              </div>
+            </div>
+          )}
+        </div>
+
         <Row className="g-4">
           {rooms.map((room) => (
             <Col key={room._id} lg={4} md={6} className="mb-4">
@@ -139,10 +205,16 @@ function Homescreen() {
                     <div className="d-grid gap-2">
                       <Button 
                         variant="success" 
-                        onClick={() => navigate(`/booking/${room._id}`)}
+                        onClick={() => handleBookNow(room)}
                         className="fw-semibold"
+                        disabled={!selectedDates}
                       >
                         🗓️ Book Now
+                        {selectedDates && (
+                          <span className="ms-2">
+                            ({selectedDates[1].diff(selectedDates[0], 'days')} nights)
+                          </span>
+                        )}
                       </Button>
                       <Button 
                         variant="outline-primary" 
@@ -230,8 +302,18 @@ function Homescreen() {
                       <Button variant="light" className="w-100 mb-2">
                         📞 Call: {selectedRoom.phonenumber}
                       </Button>
-                      <Button variant="outline-light" className="w-100" onClick={handleProceedToBooking}>
+                      <Button 
+                        variant="outline-light" 
+                        className="w-100" 
+                        onClick={handleProceedToBooking}
+                        disabled={!selectedDates}
+                      >
                         🗓️ Book Now
+                        {selectedDates && (
+                          <span className="ms-2">
+                            ({selectedDates[1].diff(selectedDates[0], 'days')} nights)
+                          </span>
+                        )}
                       </Button>
                     </div>
                   </Col>
@@ -244,7 +326,11 @@ function Homescreen() {
             <Button variant="secondary" onClick={handleCloseModal}>
               Close
             </Button>
-            <Button variant="primary" onClick={handleProceedToBooking}>
+            <Button 
+              variant="primary" 
+              onClick={handleProceedToBooking}
+              disabled={!selectedDates}
+            >
               Proceed to Booking
             </Button>
           </Modal.Footer>

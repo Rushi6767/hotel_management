@@ -398,3 +398,130 @@
     box-shadow: none;
   }
 }
+
+/* Ant Design Integration Styles */
+.ant-picker {
+  border-radius: 12px !important;
+  border: 2px solid #e1e5e9 !important;
+  transition: all 0.3s ease !important;
+}
+
+.ant-picker:hover {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+.ant-picker-focused {
+  border-color: #667eea !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+.ant-picker-input > input {
+  font-size: 1rem !important;
+  padding: 15px !important;
+}
+
+.ant-picker-large .ant-picker-input > input {
+  font-size: 1.1rem !important;
+  padding: 15px !important;
+}
+
+.ant-picker-dropdown {
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+}
+
+.ant-picker-panel {
+  border-radius: 12px !important;
+}
+
+.ant-picker-header {
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.ant-picker-content {
+  border-radius: 0 0 12px 12px !important;
+}
+
+.ant-picker-cell {
+  border-radius: 8px !important;
+  margin: 2px !important;
+}
+
+.ant-picker-cell:hover .ant-picker-cell-inner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+}
+
+.ant-picker-cell-selected .ant-picker-cell-inner {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+}
+
+.ant-picker-today .ant-picker-cell-inner {
+  border-color: #667eea !important;
+  color: #667eea !important;
+}
+
+.ant-picker-range {
+  border-radius: 12px !important;
+}
+
+.ant-picker-range .ant-picker-input {
+  border-radius: 12px 0 0 12px !important;
+}
+
+.ant-picker-range .ant-picker-input:last-child {
+  border-radius: 0 12px 12px 0 !important;
+}
+
+/* Date selection section styling */
+.date-selection-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 1px solid #dee2e6;
+  border-radius: 15px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.date-selection-section h5 {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.date-info-display {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border: 1px solid #c3e6cb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+}
+
+.date-info-display .row {
+  margin-bottom: 0.5rem;
+}
+
+.date-info-display .badge {
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+}
+
+/* Responsive adjustments for Ant Design */
+@media (max-width: 768px) {
+  .ant-picker {
+    font-size: 0.9rem !important;
+  }
+  
+  .ant-picker-input > input {
+    font-size: 0.9rem !important;
+    padding: 12px !important;
+  }
+  
+  .date-selection-section {
+    padding: 1.5rem;
+  }
+  
+  .date-info-display {
+    padding: 1rem;
+  }
+}

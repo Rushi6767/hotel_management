@@ -1,18 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Badge, Carousel, ListGroup, Alert } from 'react-bootstrap';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
+import moment from 'moment';
 
 function Bookingscreen() {
   const { roomid } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   
   const [room, setRoom] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
+  const [checkInDate, setCheckInDate] = useState(null);
+  const [checkOutDate, setCheckOutDate] = useState(null);
+  const [totalDays, setTotalDays] = useState(0);
 
   useEffect(() => {
+    // Parse dates from URL parameters
+    const urlParams = new URLSearchParams(location.search);
+    const fromDate = urlParams.get('from');
+    const toDate = urlParams.get('to');
+    
+    if (fromDate && toDate) {
+      const checkIn = moment(fromDate);
+      const checkOut = moment(toDate);
+      setCheckInDate(checkIn);
+      setCheckOutDate(checkOut);
+      setTotalDays(checkOut.diff(checkIn, 'days'));
+    }
+
     const fetchRoom = async () => {
       try {
         console.log('Fetching room with ID:', roomid);
@@ -30,9 +48,13 @@ function Bookingscreen() {
     if (roomid) {
       fetchRoom();
     }
-  }, [roomid]);
+  }, [roomid, location.search]);
 
   const handlePaymentClick = () => {
+    if (!checkInDate || !checkOutDate) {
+      alert('Please select your check-in and check-out dates first!');
+      return;
+    }
     // TODO: Show payment form in future
     alert('Payment form will be implemented here!');
     // setShowPaymentForm(true);
@@ -60,6 +82,13 @@ function Bookingscreen() {
       'Executive': ['King Size Bed', 'Work Area', 'Meeting Space', 'Mini Bar', 'Room Service', 'Free WiFi', 'Air Conditioning', 'TV', 'Coffee Maker', 'Bathrobe', 'Premium Toiletries']
     };
     return amenities[type] || ['Free WiFi', 'Air Conditioning', 'TV'];
+  };
+
+  const calculateTotalPrice = () => {
+    if (!room || !totalDays) return 0;
+    const basePrice = room.rentperday * totalDays;
+    const taxes = basePrice * 0.18; // 18% GST
+    return basePrice + taxes;
   };
 
   if (loading) {
@@ -109,6 +138,33 @@ function Bookingscreen() {
       </div>
 
       <Container className="py-5">
+        {/* Booking Details Alert */}
+        {checkInDate && checkOutDate && (
+          <Alert variant="success" className="mb-4">
+            <div className="row align-items-center">
+              <div className="col-md-8">
+                <h5 className="mb-2">
+                  <i className="fas fa-calendar-check me-2"></i>
+                  Your Booking Details
+                </h5>
+                <div className="row">
+                  <div className="col-md-6">
+                    <strong>Check-in:</strong> {checkInDate.format('dddd, MMMM Do YYYY')}
+                  </div>
+                  <div className="col-md-6">
+                    <strong>Check-out:</strong> {checkOutDate.format('dddd, MMMM Do YYYY')}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4 text-end">
+                <Badge bg="success" className="fs-5 px-3 py-2">
+                  {totalDays} {totalDays === 1 ? 'Night' : 'Nights'}
+                </Badge>
+              </div>
+            </div>
+          </Alert>
+        )}
+
         <Row className="g-5">
           {/* Main Content */}
           <Col lg={8}>
@@ -240,41 +296,74 @@ function Bookingscreen() {
               <Card.Header className="bg-warning text-dark py-3">
                 <h4 className="mb-0">
                   <i className="fas fa-tag me-2"></i>
-                  Pricing
+                  Pricing Details
                 </h4>
               </Card.Header>
               <Card.Body className="p-4">
-                <div className="text-center mb-4">
-                  <h2 className="text-success fw-bold">₹{room.rentperday}</h2>
-                  <p className="text-muted mb-0">per night</p>
-                </div>
+                {checkInDate && checkOutDate ? (
+                  <>
+                    <div className="text-center mb-4">
+                      <h2 className="text-success fw-bold">₹{calculateTotalPrice().toFixed(0)}</h2>
+                      <p className="text-muted mb-0">Total for {totalDays} {totalDays === 1 ? 'night' : 'nights'}</p>
+                    </div>
 
-                <ListGroup className="mb-4">
-                  <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                    <span>Room Rate</span>
-                    <span className="fw-bold">₹{room.rentperday}</span>
-                  </ListGroup.Item>
-                  <ListGroup.Item className="d-flex justify-content-between align-items-center">
-                    <span>Taxes & Fees</span>
-                    <span className="fw-bold">₹{(room.rentperday * 0.18).toFixed(0)}</span>
-                  </ListGroup.Item>
-                  <ListGroup.Item className="d-flex justify-content-between align-items-center bg-light">
-                    <span className="fw-bold">Total per Night</span>
-                    <span className="fw-bold text-success fs-5">₹{(room.rentperday * 1.18).toFixed(0)}</span>
-                  </ListGroup.Item>
-                </ListGroup>
+                    <ListGroup className="mb-4">
+                      <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                        <span>Room Rate (₹{room.rentperday} × {totalDays})</span>
+                        <span className="fw-bold">₹{(room.rentperday * totalDays).toFixed(0)}</span>
+                      </ListGroup.Item>
+                      <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                        <span>Taxes & Fees (18% GST)</span>
+                        <span className="fw-bold">₹{((room.rentperday * totalDays) * 0.18).toFixed(0)}</span>
+                      </ListGroup.Item>
+                      <ListGroup.Item className="d-flex justify-content-between align-items-center bg-light">
+                        <span className="fw-bold">Total Amount</span>
+                        <span className="fw-bold text-success fs-5">₹{calculateTotalPrice().toFixed(0)}</span>
+                      </ListGroup.Item>
+                    </ListGroup>
 
+                    <div className="d-grid gap-3">
+                      <Button
+                        variant="success"
+                        size="lg"
+                        onClick={handlePaymentClick}
+                        className="fw-bold py-3"
+                      >
+                        <i className="fas fa-credit-card me-2"></i>
+                        💳 Book Now & Pay
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <div className="text-center mb-4">
+                      <h2 className="text-success fw-bold">₹{room.rentperday}</h2>
+                      <p className="text-muted mb-0">per night</p>
+                    </div>
+
+                    <Alert variant="warning" className="text-center">
+                      <i className="fas fa-calendar-alt me-2"></i>
+                      Please select dates to see total pricing
+                    </Alert>
+
+                    <ListGroup className="mb-4">
+                      <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                        <span>Room Rate</span>
+                        <span className="fw-bold">₹{room.rentperday}</span>
+                      </ListGroup.Item>
+                      <ListGroup.Item className="d-flex justify-content-between align-items-center">
+                        <span>Taxes & Fees</span>
+                        <span className="fw-bold">₹{(room.rentperday * 0.18).toFixed(0)}</span>
+                      </ListGroup.Item>
+                      <ListGroup.Item className="d-flex justify-content-between align-items-center bg-light">
+                        <span className="fw-bold">Total per Night</span>
+                        <span className="fw-bold text-success fs-5">₹{(room.rentperday * 1.18).toFixed(0)}</span>
+                      </ListGroup.Item>
+                    </ListGroup>
+                  </>
+                )}
+                
                 <div className="d-grid gap-3">
-                  <Button
-                    variant="success"
-                    size="lg"
-                    onClick={handlePaymentClick}
-                    className="fw-bold py-3"
-                  >
-                    <i className="fas fa-credit-card me-2"></i>
-                    💳 Book Now & Pay
-                  </Button>
-                  
                   <Button
                     variant="outline-primary"
                     onClick={() => navigate('/')}
